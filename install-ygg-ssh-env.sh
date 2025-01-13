@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 whoami
 sudo apt-get install dirmngr
 sudo mkdir -p /usr/local/apt-keys
