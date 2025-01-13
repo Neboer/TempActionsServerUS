@@ -12,7 +12,7 @@ grab a temp actions server to use as temporary server in untilsoftware
 `xz -z9 yggdrasil.conf`
 将其压缩，对生成的配置文件压缩版`yggdrasil.conf.xz`，执行
 ```
-cat yggdrasil.conf.xz |base64 > tempserverconf.txt
+cat yggdrasil.conf.xz | base64 > tempserverconf.txt
 ```
 这样tempserverconf就是压缩并base64后的配置环境变量值，传进Secret值YGGCONFDATA中
 然后将ssh公钥传进Secret `PUBKEY`中
