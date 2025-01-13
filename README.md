@@ -2,7 +2,7 @@
 grab a temp actions server to use as temporary server in untilsoftware
 
 使用方法：
-运行workflow,然后等进sleep后，`ssh temp-gh1.us.ygg`
+运行workflow,然后等进sleep后，`ssh runner@temp-gh1.us.ygg`
 
 配置方法：
 
