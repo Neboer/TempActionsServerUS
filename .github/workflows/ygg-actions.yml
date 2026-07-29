@@ -1,11 +1,14 @@
 name: Grab The Server
+
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  setup:
     name: setup_and_run
     runs-on: ubuntu-latest
+    outputs:
+      continue: ${{ steps.set_continue.outputs.continue }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -14,5 +17,27 @@ jobs:
         env:
           YGGCONFDATA: ${{ secrets.YGGCONFDATA }}
           PUBKEY: ${{ secrets.PUBKEY }}
-      - name: sleep
-        run: sleep 5.5h
+      - name: set_continue
+        id: set_continue
+        run: echo "continue=true" >> $GITHUB_OUTPUT
+
+  sleep_job:
+    name: sleep_job_${{ matrix.index }}
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      max-parallel: 1
+    steps:
+      - name: sleep_355min
+        run: sleep 355m
+
+  final_sleep:
+    name: final_sleep
+    needs: [setup, sleep_job]
+    if: always() && needs.setup.outputs.continue == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: sleep_extra
+        run: sleep 5m
