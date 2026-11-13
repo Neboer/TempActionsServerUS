@@ -33,10 +33,12 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:temp-actions
           hostname: temp-gh1
-          args: --accept-routes=false --accept-dns=false --ssh=false
+          args: --accept-dns=false --ssh=false
           use-cache: false
       - name: Start tailnet-only SSH
-        run: bash install-tailscale-ssh-env.sh
+        run: |
+          sudo tailscale set --accept-routes=false
+          bash install-tailscale-ssh-env.sh
         env:
           SSH_HOST_KEY: ${{ secrets.SSH_HOST_KEY }}
           PUBKEY: ${{ secrets.PUBKEY }}
