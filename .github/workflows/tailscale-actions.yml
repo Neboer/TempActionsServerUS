@@ -1,0 +1,46 @@
+name: Grab The Server (Tailscale)
+on:
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: SSH session window
+        type: choice
+        options:
+          - 5.5h
+          - 15m
+        default: 5.5h
+
+permissions:
+  contents: read
+
+concurrency:
+  group: temp-gh1
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: setup_and_run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Join tailnet
+        uses: tailscale/github-action@064b10558093f38325e838ddea35486bdc6b1d5c # v4.4.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:temp-actions
+          hostname: temp-gh1
+          args: --accept-routes=false --accept-dns=false --ssh=false
+          use-cache: false
+      - name: Start tailnet-only SSH
+        run: bash install-tailscale-ssh-env.sh
+        env:
+          SSH_HOST_KEY: ${{ secrets.SSH_HOST_KEY }}
+          PUBKEY: ${{ secrets.PUBKEY }}
+      - name: Wait for SSH sessions
+        env:
+          DURATION: ${{ inputs.duration }}
+        run: sleep "$DURATION"
